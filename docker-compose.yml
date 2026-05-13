@@ -1,0 +1,31 @@
+services:
+  libras_control:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: libras_control:latest
+    container_name: libras_control
+
+    # GUI (OpenCV)
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+    # Câmera e Serial
+    devices:
+      - /dev/video0:/dev/video0
+      - /dev/ttyUSB1:/dev/ttyUSB1
+
+    # Necessário para acessar devices
+    privileged: true
+    network_mode: host
+
+    command: >
+      ros2 run libras_control libras_control_node
+      --ros-args
+      -p serial_port:=/dev/ttyUSB1
+      -p model_path:=/ros2_ws/src/libras_control/models/best.pt
+
+    restart: unless-stopped
