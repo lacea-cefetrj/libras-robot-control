@@ -16,13 +16,15 @@ Assista ao vídeo do projeto em funcionamento no YouTube:
 
 ### Fotos do Hardware
 
-> Foto do robô montado — adicionar aqui
+<img width="1600" height="1200" alt="WhatsApp Image 2026-06-24 at 20 04 07" src="https://github.com/user-attachments/assets/5dd5d20f-8d92-4a01-95f1-4411a5bcbfe3" />
 
-> Foto do ESP32 Escravo e driver de motor — adicionar aqui
+
+
 
 ### Modelo 3D do Robô
 
-> Adicionar aqui imagem ou arquivo do modelo 3D do chassi (STL / link de download)
+https://www.thingiverse.com/thing:7374425
+<img width="1366" height="762" alt="Screenshot_1" src="https://github.com/user-attachments/assets/cc0ec1cc-64f7-444c-8047-54a1d786cbfc" />
 
 ---
 
