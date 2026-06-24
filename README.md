@@ -1,165 +1,217 @@
-# Controle Gestual de Robô Diferencial
+# Projeto Lucas Leonardo Rosa - WRE
 
-Controle de robô móvel simulado no Gazebo Classic via gestos de mão captados pela webcam, usando ROS2 Humble, OpenCV e MediaPipe, totalmente containerizado com Docker.
+Classificador de LIBRAS para Controle de Robô Móvel
+
+Sistema robótico educacional focado em acessibilidade, capaz de classificar sinais de LIBRAS em tempo real via visão computacional (YOLO) e converter as predições em comandos cinemáticos para um robô móvel integrado ao ecossistema ROS 2 Humble, simulado no Gazebo Classic e replicado no hardware real com ESP32.
 
 ---
 
 ## Demonstração
 
-> 📸 *Foto do robô no Gazebo — adicionar aqui*
+### Vídeo
 
-> 🎥 *Vídeo do sistema funcionando — adicionar aqui*
+Assista ao vídeo do projeto em funcionamento no YouTube:
 
----
+[https://www.youtube.com/watch?v=OtmA4iEpjC8](https://www.youtube.com/watch?v=OtmA4iEpjC8)
 
-## Gestos
+### Fotos do Hardware
 
-| Gesto | Dedos | Comando |
-|-------|-------|---------|
-| Punho fechado | 0 | Parar |
-| 1 dedo | 1 | Esquerda |
-| 2 dedos | 2 | Direita |
-| 3 dedos | 3 | Frente |
-| Mão aberta | 4+ | Trás |
+> Foto do robô montado — adicionar aqui
 
----
+> Foto do ESP32 Escravo e driver de motor — adicionar aqui
 
-## Requisitos
+### Modelo 3D do Robô
 
-- Ubuntu 22.04
-- Docker + Docker Compose
-- Webcam USB
-- Placa de vídeo com suporte a OpenGL (para o Gazebo)
-
-> Não é necessário instalar ROS2, MediaPipe ou qualquer dependência — tudo roda dentro do Docker.
+> Adicionar aqui imagem ou arquivo do modelo 3D do chassi (STL / link de download)
 
 ---
 
-## Como rodar
+## Como Funciona o Projeto
 
-### 1. Instale o Docker
+O fluxo de funcionamento do sistema é dividido em três camadas principais:
+
+**Camada de Visão (YOLO)**
+A webcam captura o usuário executando os sinais de LIBRAS. Um modelo customizado, treinado com YOLO, processa as imagens em tempo real e classifica o gesto correspondente.
+
+**Camada de Software (ROS 2 Humble)**
+O nó de visão processa a predição do modelo e converte o resultado em comandos de velocidade (geometry_msgs/Twist). Esses comandos podem ser usados de duas formas, em etapas separadas:
+
+- **Simulação:** movimentam o modelo virtual do robô (descrito em URDF) dentro do ambiente Gazebo Classic.
+- **Robô real:** são enviados via porta serial para o microcontrolador ESP32 Mestre.
+
+**Camada de Hardware (ESP32)**
+No modo robô real, o ESP32 Mestre recebe os comandos via serial e os retransmite por comunicação sem fio (ESP-NOW) para o ESP32-S3 Escravo embarcado no veículo físico. O robô real replica os movimentos através dos motores, controlados por um driver de ponte H.
+
+---
+
+## Mapeamento de Sinais e Comandos
+
+A tabela abaixo descreve a relação entre o sinal de LIBRAS reconhecido pela câmera e o respectivo comando executado pelo robô:
+
+| Sinal LIBRAS | Comando  |
+|--------------|----------|
+| A            | Frente   |
+| B            | Trás     |
+| C            | Direita  |
+| D            | Esquerda |
+
+---
+
+## Modelo Treinado (YOLO)
+
+Os pesos gerados após o treinamento do modelo customizado para reconhecimento dos sinais de LIBRAS estão disponíveis em `models/best.pt`, dentro do pacote `libras_robo`. O arquivo contém a rede calibrada para realizar as inferências em tempo real no nó do ROS 2.
+
+---
+
+## Requisitos do Sistema
+
+- Host: Ubuntu 22.04 LTS
+- Ambiente: ROS 2 Humble (via container Docker)
+- Simulador: Gazebo Classic
+- Hardware Host: Webcam USB
+- Hardware Embarcado (modo robô real): ESP32 (Mestre) + ESP32-S3 (Escravo) + Driver de motor
+
+---
+
+## Como Rodar o Projeto
+
+### 1. Pré-requisitos
+
+Instale o git:
 
 ```bash
-sudo apt install docker.io docker-compose-v2
+sudo apt install git
+```
+
+Instale o Docker:
+
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
 sudo usermod -aG docker $USER
-# Reinicie o terminal após este comando
+newgrp docker
 ```
 
 ### 2. Clone o repositório
 
 ```bash
-git clone https://github.com/Lucas-ros4/controle_gestual
-cd controle_gestual
+git clone git@github.com:lacea-cefetrj/libras-robot-control.git
+cd libras-robot-control
 ```
 
-### 3. Verifique o índice da sua webcam
+### 3. Verifique sua webcam
 
 ```bash
 v4l2-ctl --list-devices
 ```
 
-Se sua webcam **não** for `/dev/video2`, edite o arquivo `docker/docker-compose.yml` e troque as duas ocorrências de `/dev/video2` pelo device correto.
+Se sua webcam não for `/dev/video2`, edite o `docker/docker-compose.yml` e ajuste o caminho.
 
-### 4. Dê permissão de execução ao nó
+### 4. Construa a imagem Docker
+
+Este comando vai baixar o Ubuntu, o ROS 2, o Gazebo e as bibliotecas de visão computacional. Pode demorar alguns minutos na primeira vez.
 
 ```bash
-chmod +x src/controle_gestual/controle_gestual/controle_gestual_node.py
+cd docker
+docker compose build
 ```
 
-### 5. Suba o container
+### 5. Dê permissão para abrir telas gráficas
 
 ```bash
 xhost +local:docker
-cd docker
-docker compose up --build
 ```
 
-> Na primeira vez o build pode demorar alguns minutos. Nas próximas vezes use apenas `docker compose up`.
-
-### 6. Em outro terminal — abra o Gazebo com o robô
+### 6. Suba o container
 
 ```bash
-cd docker
-docker compose exec controle_gestual bash
+docker compose up -d
+```
+
+### 7. Entre no container e compile o workspace
+
+```bash
+docker compose exec ros2_ws bash
 ```
 
 Dentro do container:
 
 ```bash
+source /opt/ros/humble/setup.bash
+cd /root/ros2_ws
+colcon build
+source install/setup.bash
+```
+
+### 8. Abrir o Docker depois de já instalado
+
+Sempre que for abrir o container depois do primeiro build, rode:
+
+```bash
+cd docker
+docker compose up -d
+docker compose exec ros2_ws bash
+```
+
+Dentro do container, lembre de carregar o ambiente novamente em cada novo terminal:
+
+```bash
+source /opt/ros/humble/setup.bash
 source /root/ros2_ws/install/setup.bash
+```
+
+---
+
+## Atividade 1: Ligar a Simulação (Gazebo)
+
+Com o container aberto e o ambiente carregado, lance o robô no Gazebo:
+
+```bash
 ros2 launch controle_gestual robo.launch.py
 ```
 
-### 7. Em um terceiro terminal — rode o nó de gestos
+Em um novo terminal, entre no container de novo e rode o nó de controle:
 
 ```bash
-cd docker
-docker compose exec controle_gestual bash
-```
-
-Dentro do container:
-
-```bash
-chmod +x /root/ros2_ws/src/controle_gestual/controle_gestual/controle_gestual_node.py
+docker compose exec ros2_ws bash
+source /opt/ros/humble/setup.bash
 source /root/ros2_ws/install/setup.bash
 ros2 run controle_gestual controle_gestual_node.py
 ```
 
----
+### Listar os tópicos ativos
 
-## Estrutura do projeto
-controle_gestual/
-├── src/
-│   └── controle_gestual/
-│       ├── CMakeLists.txt
-│       ├── package.xml
-│       ├── launch/
-│       │   └── robo.launch.py
-│       ├── urdf/
-│       │   └── my_robot.urdf
-│       └── controle_gestual/
-│           └── controle_gestual_node.py
-├── docker/
-│   ├── Dockerfile
-│   ├── docker-compose.yml
-│   └── entrypoint.sh
-├── .gitignore
-└── README.md
-
----
-
-## Solução de problemas
-
-**`ros2 run`: No executable found**
 ```bash
-chmod +x /root/ros2_ws/src/controle_gestual/controle_gestual/controle_gestual_node.py
-source /root/ros2_ws/install/setup.bash
+ros2 topic list -t
 ```
 
-**Gazebo não abre / erro de display**
-```bash
-xhost +local:docker
-```
-> Execute este comando no terminal do host antes de subir o container. Deve ser repetido após reiniciar o computador.
+### Conferir mensagens chegando no tópico
 
-**Webcam não encontrada**
 ```bash
-v4l2-ctl --list-devices
-# Ajuste o /dev/videoX no docker/docker-compose.yml
+ros2 topic echo /cmd_vel
 ```
 
 ---
 
-## Tecnologias
+## Atividade 2: Controle do Robô Real (LIBRAS + ESP32)
 
-- [ROS2 Humble](https://docs.ros.org/en/humble/)
-- [Gazebo Classic](https://classic.gazebosim.org/)
-- [MediaPipe](https://mediapipe.dev/)
-- [OpenCV](https://opencv.org/)
-- [Docker](https://www.docker.com/)
+Conecte o ESP32 Mestre via USB e identifique a porta serial:
+
+```bash
+ls /dev/ttyUSB*
+```
+
+Dentro do container, rode o nó de classificação de LIBRAS:
+
+```bash
+ros2 run libras_robo libras_robo_node \
+  --ros-args \
+  -p camera_device:=/dev/video0 \
+  -p serial_port:=/dev/ttyUSB0
+```
+
+Uma janela vai abrir mostrando a webcam com o sinal de LIBRAS detectado em tempo real. Faça os sinais da tabela acima para mover o robô físico.
 
 ---
 
-## Autor
-
-Lucas — [@Lucas-ros4](https://github.com/Lucas-ros4)
+## Estrutura do Projeto
