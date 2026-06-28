@@ -10,9 +10,7 @@ Sistema robótico educacional focado em acessibilidade, capaz de classificar sin
 
 ### Vídeo
 
-Assista ao vídeo do projeto em funcionamento no YouTube:
-
-[https://www.youtube.com/watch?v=OtmA4iEpjC8](https://www.youtube.com/watch?v=OtmA4iEpjC8)
+[![Clique para assistir ao vídeo](https://img.youtube.com/vi/UPH2emlGtf8/0.jpg)](https://www.youtube.com/watch?v=UPH2emlGtf8)
 
 ### Fotos do Hardware
 
