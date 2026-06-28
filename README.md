@@ -14,7 +14,8 @@ Sistema robótico educacional focado em acessibilidade, capaz de classificar sin
 
 ### Fotos do Hardware
 
-<img width="1600" height="1200" alt="WhatsApp Image 2026-06-24 at 20 04 07" src="https://github.com/user-attachments/assets/5dd5d20f-8d92-4a01-95f1-4411a5bcbfe3" />
+<img width="1600" height="1200" alt="ecc41f4b-48b1-4f2a-9747-aaefadfe0074" src="https://github.com/user-attachments/assets/208b92f8-af3d-472a-b513-795eddb7cbf7" />
+
 
 
 
