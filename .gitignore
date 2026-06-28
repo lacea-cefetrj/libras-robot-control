@@ -1,13 +1,21 @@
-# ROS2
+# ROS 2 build
 build/
 install/
 log/
 
-# VSCode
-.vscode/
-*.db
-*.vc.db
+# Modelo YOLO (arquivo grande — download separado)
+*.pt
+
+# Backups e temporários
+backup_*/
+reorganizar.sh
 
 # Python
 __pycache__/
 *.pyc
+
+# VSCode
+.vscode/
+
+# Docker ignore
+.dockerignore

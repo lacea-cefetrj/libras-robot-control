@@ -1,19 +1,22 @@
 version: '3.8'
 
 services:
-  controle_gestual:
+  ros2_ws:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+    container_name: libras_robot
     environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ../:/root/ros2_ws
-      - /dev/video2:/dev/video2
+      - ../src:/root/ros2_ws/src        # hot-reload do código fonte
     devices:
-      - /dev/video2:/dev/video2
+      # Webcam — ajuste se sua câmera for /dev/video0 ou /dev/video1
+      - /dev/video0:/dev/video0
+      # Serial ESP32 — descomente a linha abaixo ao usar o robô real
+      # - /dev/ttyUSB0:/dev/ttyUSB0
     network_mode: host
     privileged: true
     stdin_open: true

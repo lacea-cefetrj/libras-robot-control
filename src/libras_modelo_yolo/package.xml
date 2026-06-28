@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>libras_modelo_yolo</name>
+  <version>1.0.0</version>
+  <description>Modelo YOLO compartilhado para reconhecimento de LIBRAS</description>
+  <maintainer email="seu@email.com">Seu Nome</maintainer>
+  <license>MIT</license>
+  <depend>rclpy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <export><build_type>ament_python</build_type></export>
+</package>

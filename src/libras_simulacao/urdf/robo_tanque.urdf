@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<robot name="robo_tanque">
+
+  <material name="cinza"><color rgba="0.3 0.3 0.3 1.0"/></material>
+  <material name="preto"><color rgba="0.1 0.1 0.1 1.0"/></material>
+
+  <!-- Chassi central -->
+  <link name="base_link">
+    <visual>
+      <geometry><box size="0.155 0.145 0.04"/></geometry>
+      <material name="cinza"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.155 0.145 0.04"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ===== Esteira Esquerda (FIXA — só visual, não gira) ===== -->
+  <link name="esteira_esquerda">
+    <visual>
+      <geometry><box size="0.105 0.035 0.055"/></geometry>
+      <material name="preto"/>
+    </visual>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="esteira_esquerda_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="esteira_esquerda"/>
+    <origin xyz="0 0.09 -0.0075" rpy="0 0 0"/>
+  </joint>
+
+  <link name="esteira_esquerda_ponta_frente">
+    <visual>
+      <geometry><cylinder radius="0.0275" length="0.035"/></geometry>
+      <material name="preto"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00005"/>
+    </inertial>
+  </link>
+
+  <joint name="esteira_esquerda_ponta_frente_joint" type="fixed">
+    <parent link="esteira_esquerda"/>
+    <child link="esteira_esquerda_ponta_frente"/>
+    <origin xyz="0.0525 0 0" rpy="1.5707 0 0"/>
+  </joint>
+
+  <link name="esteira_esquerda_ponta_tras">
+    <visual>
+      <geometry><cylinder radius="0.0275" length="0.035"/></geometry>
+      <material name="preto"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00005"/>
+    </inertial>
+  </link>
+
+  <joint name="esteira_esquerda_ponta_tras_joint" type="fixed">
+    <parent link="esteira_esquerda"/>
+    <child link="esteira_esquerda_ponta_tras"/>
+    <origin xyz="-0.0525 0 0" rpy="1.5707 0 0"/>
+  </joint>
+
+  <!-- Roda invisível esquerda — faz a física, sem geometria visual -->
+  <link name="roda_motriz_esquerda">
+    <collision>
+      <geometry><cylinder radius="0.0275" length="0.035"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0005" ixy="0" ixz="0" iyy="0.0005" iyz="0" izz="0.0007"/>
+    </inertial>
+  </link>
+
+  <joint name="roda_motriz_esquerda_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="roda_motriz_esquerda"/>
+    <origin xyz="0 0.09 -0.0075" rpy="1.5707 0 0"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <!-- ===== Esteira Direita (FIXA — só visual, não gira) ===== -->
+  <link name="esteira_direita">
+    <visual>
+      <geometry><box size="0.105 0.035 0.055"/></geometry>
+      <material name="preto"/>
+    </visual>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="esteira_direita_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="esteira_direita"/>
+    <origin xyz="0 -0.09 -0.0075" rpy="0 0 0"/>
+  </joint>
+
+  <link name="esteira_direita_ponta_frente">
+    <visual>
+      <geometry><cylinder radius="0.0275" length="0.035"/></geometry>
+      <material name="preto"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00005"/>
+    </inertial>
+  </link>
+
+  <joint name="esteira_direita_ponta_frente_joint" type="fixed">
+    <parent link="esteira_direita"/>
+    <child link="esteira_direita_ponta_frente"/>
+    <origin xyz="0.0525 0 0" rpy="1.5707 0 0"/>
+  </joint>
+
+  <link name="esteira_direita_ponta_tras">
+    <visual>
+      <geometry><cylinder radius="0.0275" length="0.035"/></geometry>
+      <material name="preto"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00005"/>
+    </inertial>
+  </link>
+
+  <joint name="esteira_direita_ponta_tras_joint" type="fixed">
+    <parent link="esteira_direita"/>
+    <child link="esteira_direita_ponta_tras"/>
+    <origin xyz="-0.0525 0 0" rpy="1.5707 0 0"/>
+  </joint>
+
+  <!-- Roda invisível direita — faz a física, sem geometria visual -->
+  <link name="roda_motriz_direita">
+    <collision>
+      <geometry><cylinder radius="0.0275" length="0.035"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0005" ixy="0" ixz="0" iyy="0.0005" iyz="0" izz="0.0007"/>
+    </inertial>
+  </link>
+
+  <joint name="roda_motriz_direita_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="roda_motriz_direita"/>
+    <origin xyz="0 -0.09 -0.0075" rpy="1.5707 0 0"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <!-- Plugin Differential Drive — usa as rodas invisíveis -->
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <left_joint>roda_motriz_esquerda_joint</left_joint>
+      <right_joint>roda_motriz_direita_joint</right_joint>
+      <wheel_separation>0.18</wheel_separation>
+      <wheel_diameter>0.055</wheel_diameter>
+      <max_wheel_torque>20</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <update_rate>30</update_rate>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="roda_motriz_esquerda">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+  </gazebo>
+  <gazebo reference="roda_motriz_direita">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+  </gazebo>
+
+</robot>

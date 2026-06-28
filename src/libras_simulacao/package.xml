@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>libras_simulacao</name>
+  <version>1.0.0</version>
+  <description>Simulação do robô tanque no Gazebo via LIBRAS</description>
+  <maintainer email="seu@email.com">Seu Nome</maintainer>
+  <license>MIT</license>
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>libras_modelo_yolo</depend>
+  <export><build_type>ament_python</build_type></export>
+</package>
